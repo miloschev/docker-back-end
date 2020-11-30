@@ -1,0 +1,27 @@
+version: "3.4"
+services:
+
+    sqlserver:
+        image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+        container_name: MsSqlServer1
+        environment:
+          - ACCEPT_EULA=Y
+          - SA_PASSWORD=Support123!
+        ports:
+        - "1433:1433"
+        volumes:
+        - mssql-docker-data-v1:/var/opt/mssql/data
+
+    vegait.api:
+        image: ${DOCKER_REGISTRY-}vegaitapi
+        build:
+          context: .
+          dockerfile: VegaIT.API/Dockerfile
+        ports:
+        - "443:443"
+        - "80:80"
+        depends_on: 
+          - sqlserver
+
+volumes:
+  mssql-docker-data-v1:
